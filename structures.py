@@ -29,16 +29,18 @@ def shift_point(point: int, shift: int, prime: int) -> int:
     return shifted_point
 
 
+# Non flat lines
+
+
 def non_flat_line_translates(
     prime: int, line: List[int]
 ) -> List[List[List[int]]]:
     "Line is assumed to be a line pointing outside of the x y plane"
-    total_points = get_total_points(prime)
     translates = [[[0] for _ in range(prime)] for _ in range(prime)]
     for x in range(prime):
         for y in range(prime):
             translates[y][x] = [
-                (point + x + prime * y) % total_points for point in line
+                shift_point(point, x + y * prime, prime) for point in line
             ]
     return translates
 
@@ -60,4 +62,39 @@ def all_non_flat_lines(prime: int) -> List[List[List[List[List[int]]]]]:
     full_list = [[spot_holder for _ in range(prime)] for _ in range(prime)]
     for x, y, z, w in product(range(prime), repeat=4):
         full_list[y][x] = non_flat_line_translates(prime, origin_lines[w][z])
+    return full_list
+
+
+# Intermediate lines
+def intermediate_lines_through_origin(prime: int) -> List[List[int]]:
+    stereo_directions = [[0] for _ in range(prime)]
+    for x in range(prime):
+        stereo_directions[x] = [
+            (t * x) % prime + t * prime for t in range(prime)
+        ]
+    return stereo_directions
+
+
+def intermedaite_line_translates(
+    prime: int, line: List[int]
+) -> List[List[List[int]]]:
+    "Line direction is 0 in z coord and nonzero in y coord"
+    translates = [[[0] for _ in range(prime)] for _ in range(prime)]
+    for x in range(prime):
+        for z in range(prime):
+            translates[z][x] = [
+                shift_point(point, x + z * prime**2, prime) for point in line
+            ]
+    return translates
+
+
+def all_intermediate_lines(prime: int) -> List[List[List[List[int]]]]:
+    intermediate_lines = intermediate_lines_through_origin(prime)
+    full_list = [
+        [[0 for _ in range(prime)] for _ in range(prime)] for _ in range(prime)
+    ]
+    for x, z, w in product(range(prime), repeat=4):
+        full_list[z][x] = intermedaite_line_translates(
+            prime, intermediate_lines[w]
+        )
     return full_list
