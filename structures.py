@@ -12,8 +12,8 @@ def get_total_directions(prime: int) -> int:
 
 
 def expand_index(index: int, prime: int) -> Tuple[int, int, int]:
-    z, xy = divmod(index, prime**2)
-    y, x = divmod(xy, prime)
+    z, yx = divmod(index, prime**2)
+    y, x = divmod(yx, prime)
     return (x, y, z)
 
 
@@ -90,10 +90,9 @@ def intermedaite_line_translates(
 
 def all_intermediate_lines(prime: int) -> List[List[List[List[int]]]]:
     intermediate_lines = intermediate_lines_through_origin(prime)
-    full_list = [
-        [[0 for _ in range(prime)] for _ in range(prime)] for _ in range(prime)
-    ]
-    for x, z, w in product(range(prime), repeat=4):
+    spot_holder = [[[0] for _ in range(prime)]]
+    full_list = [spot_holder for _ in range(prime)]
+    for x, z, w in product(range(prime), repeat=3):
         full_list[z][x] = intermedaite_line_translates(
             prime, intermediate_lines[w]
         )
