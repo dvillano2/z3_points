@@ -33,7 +33,7 @@ def shift_point(point: int, shift: int, prime: int) -> int:
 
 
 def non_flat_line_translates(
-    prime: int, line: List[int]
+    line: List[int], prime: int
 ) -> List[List[List[int]]]:
     "Line is assumed to be a line pointing outside of the x y plane"
     translates = [[[0] for _ in range(prime)] for _ in range(prime)]
