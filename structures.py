@@ -56,6 +56,29 @@ def non_flat_lines_through_origin(prime: int) -> List[List[List[int]]]:
     return stereo_directions
 
 
+def lines_from_plane(prime: int) -> List[List[List[int]]]:
+    """
+    Give a plane of points, give a list of all lines
+    in the plane ordered so that every [a*prime : (a+1)*prime}]
+    form a chunk of parallel lines. Useful for plane gorupings
+    """
+    x_function_lines = [
+        [
+            [[x, ((m * x) + b) % prime] for x in range(prime)]
+            for b in range(prime)
+        ]
+        for m in range(prime)
+    ]
+    vertical_lines = [[[b, y] for y in range(prime)] for b in range(prime)]
+    final_list = [[] for _ in range(prime**2 + prime)]
+    for a in range(prime):
+        for b in range(prime):
+            final_list[a + prime * b] = x_function_lines[a][b]
+    for a in range(prime):
+        final_list[prime**2 + a] = vertical_lines[a]
+    return final_list
+
+
 def all_non_flat_lines(prime: int) -> List[List[List[List[List[int]]]]]:
     origin_lines = non_flat_lines_through_origin(prime)
     spot_holder = [[[0] for _ in range(prime)] for _ in range(prime)]
