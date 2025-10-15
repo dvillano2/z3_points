@@ -56,7 +56,19 @@ def non_flat_lines_through_origin(prime: int) -> List[List[List[int]]]:
     return stereo_directions
 
 
-def lines_from_plane(prime: int) -> List[List[List[int]]]:
+def lines_for_plane_organization(prime: int) -> List[List[List[int]]]:
+denes_from_linef non_flat_line_translates(
+    line: List[int], prime: int
+) -> List[List[List[int]]]:
+    "Line is assumed to be a line pointing outside of the x y plane"
+    translates = [[[0] for _ in range(prime)] for _ in range(prime)]
+    for x in range(prime):
+        for y in range(prime):
+            translates[y][x] = [
+                shift_point(point, x + y * prime, prime) for point in line
+            ]
+    return translates
+
     """
     Give a plane of points, give a list of all lines
     in the plane ordered so that every [a*prime : (a+1)*prime}]
@@ -73,10 +85,28 @@ def lines_from_plane(prime: int) -> List[List[List[int]]]:
     final_list = [[] for _ in range(prime**2 + prime)]
     for a in range(prime):
         for b in range(prime):
-            final_list[a + prime * b] = x_function_lines[a][b]
+            final_list[a + prime * b] = x_function_lines[b][a]
     for a in range(prime):
         final_list[prime**2 + a] = vertical_lines[a]
     return final_list
+
+
+def planes_from_line(non_flat_direction, prime):
+    """
+    returns a list of lists such that each
+    sub list is list of lines in the given
+    direction that comprise a plane
+    moreover, each slice of the for [a*prime: (a+1)*prime]
+    comprise a plane
+    all such planes are given this way
+    """
+    translates = non_flat_line_translates(non_flat_direction, prime)
+    indices = lines_for_plane_organization(prime)
+    in_place = indices
+    for a, _ in enumerate(in_place):
+        for b, __ in enumerate(in_place[0]):
+            in_place[a][b] = translates[in_place[a][b][0]][in_place[a][b][1]]
+    return in_place
 
 
 def all_non_flat_lines(prime: int) -> List[List[List[List[List[int]]]]]:
