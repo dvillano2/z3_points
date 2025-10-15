@@ -56,10 +56,8 @@ def non_flat_lines_through_origin(prime: int) -> List[List[List[int]]]:
     return stereo_directions
 
 
+<<<<<<< HEAD
 def lines_for_plane_organization(prime: int) -> List[List[List[int]]]:
-denes_from_linef non_flat_line_translates(
-    line: List[int], prime: int
-) -> List[List[List[int]]]:
     "Line is assumed to be a line pointing outside of the x y plane"
     translates = [[[0] for _ in range(prime)] for _ in range(prime)]
     for x in range(prime):
@@ -109,6 +107,8 @@ def planes_from_line(non_flat_direction, prime):
     return in_place
 
 
+=======
+>>>>>>> parent of c2c6abf (towards better organization)
 def all_non_flat_lines(prime: int) -> List[List[List[List[List[int]]]]]:
     origin_lines = non_flat_lines_through_origin(prime)
     spot_holder = [[[0] for _ in range(prime)] for _ in range(prime)]
