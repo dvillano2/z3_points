@@ -1,3 +1,20 @@
+"""
+usage at non flat stage:
+line_list, translator = single_list_non_flat_lines(prime)
+non_indexed = all_non_flat_plane_groupings(5)
+indexed = all_non_flat_plane_groupings_index(non_indexed, translator)
+
+line_list will be a list of all lines (list of lists)
+indexed will be a list of lists where each element represents a
+line via its spot in line_list
+
+so for the program, you can sum over everything in the line list
+(zeros, ones) demand that they're below the bound, then sum each
+of those via the plane groupings and demand they're under p + 1
+and the score bumps up if you get the same answer fo
+every chunk of the form [kp:(k+1)p]
+"""
+
 from typing import List
 from typing import Dict
 from typing import Tuple
@@ -98,6 +115,15 @@ def planes_from_line(non_flat_direction, prime):
     return in_place
 
 
+def all_non_flat_plane_groupings(prime: int):
+    through_origin = non_flat_lines_through_origin(prime)
+    place_holder = []
+    for directions in through_origin:
+        for direction in directions:
+            place_holder.extend(planes_from_line(direction, prime))
+    return place_holder
+
+
 def planes_from_line_index_version(non_flat_direction, prime):
     """
     like before, but instead has the line intdices as
@@ -123,17 +149,24 @@ def all_non_flat_lines(prime: int) -> List[List[List[List[List[int]]]]]:
 
 def single_list_non_flat_lines(
     prime: int,
-) -> Tuple[List[List[int]], Dict[List[int], int]]:
+) -> Tuple[List[List[int]], Dict[Tuple[int, ...], int]]:
     final_length: int = prime**4
     place_holder: List[List[int]] = [[] for _ in range(final_length)]
-    translator: Dict[List[int], int] = {}
+    translator: Dict[Tuple[int, ...], int] = {}
     structured = all_non_flat_lines(prime)
     for x, y, z, w in product(range(prime), repeat=4):
         spot: int = prime**3 * x + prime**2 * y + prime * z + w
         line: List[int] = structured[x][y][z][w]
         place_holder[spot] = structured[x][y][z][w]
-        translator[line] = spot
+        translator[tuple(line)] = spot
     return place_holder, translator
+
+
+def all_non_flat_plane_groupings_index(non_index_list, translator):
+    return [
+        [translator[tuple(line)] for line in grouping]
+        for grouping in non_index_list
+    ]
 
 
 # Intermediate lines
