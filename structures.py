@@ -179,7 +179,7 @@ def intermediate_lines_through_origin(prime: int) -> List[List[int]]:
     return stereo_directions
 
 
-def intermedaite_line_translates(
+def intermediate_line_translates(
     prime: int, line: List[int]
 ) -> List[List[List[int]]]:
     "Line direction is 0 in z coord and nonzero in y coord"
@@ -197,7 +197,7 @@ def all_intermediate_lines(prime: int) -> List[List[List[List[int]]]]:
     spot_holder = [[[0] for _ in range(prime)]]
     full_list = [spot_holder for _ in range(prime)]
     for x, z, w in product(range(prime), repeat=3):
-        full_list[z][x] = intermedaite_line_translates(
+        full_list[z][x] = intermediate_line_translates(
             prime, intermediate_lines[w]
         )
     return full_list
