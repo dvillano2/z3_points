@@ -97,12 +97,26 @@ def planes_from_line(non_flat_direction, prime):
     return in_place
 
 
+def planes_from_line_index_version(non_flat_direction, prime):
+    """
+    like before, but instead has the line intdices as
+    they will be if everything is flattened
+    """
+    indices = lines_for_plane_organization(prime)
+    in_place = indices
+    for a, _ in enumerate(in_place):
+        for b, __ in enumerate(in_place[0]):
+            in_place[a][b] = in_place[a][b][0] + in_place[a][b][1] * prime
+    return in_place
+
+
 def all_non_flat_lines(prime: int) -> List[List[List[List[List[int]]]]]:
+    """something wrong here"""
     origin_lines = non_flat_lines_through_origin(prime)
     spot_holder = [[[0] for _ in range(prime)] for _ in range(prime)]
     full_list = [[spot_holder for _ in range(prime)] for _ in range(prime)]
-    for x, y, z, w in product(range(prime), repeat=4):
-        full_list[y][x] = non_flat_line_translates(prime, origin_lines[w][z])
+    for x, y in product(range(prime), repeat=2):
+        full_list[y][x] = non_flat_line_translates(origin_lines[y][x], prime)
     return full_list
 
 
