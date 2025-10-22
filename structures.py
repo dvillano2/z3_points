@@ -194,10 +194,27 @@ def intermediate_line_translates(
 
 def all_intermediate_lines(prime: int) -> List[List[List[List[int]]]]:
     intermediate_lines = intermediate_lines_through_origin(prime)
-    spot_holder = [[[0] for _ in range(prime)]]
-    full_list = [spot_holder for _ in range(prime)]
-    for x, z, w in product(range(prime), repeat=3):
-        full_list[z][x] = intermediate_line_translates(
-            prime, intermediate_lines[w]
+    full_list: List[List[List[List[int]]]] = [[] for _ in range(prime)]
+    for x in range(prime):
+        full_list[x] = intermediate_line_translates(
+            prime, intermediate_lines[x]
         )
     return full_list
+
+
+# Final direction
+def final_direction(prime: int) -> List[int]:
+    return list(range(prime))
+
+
+def final_line_translates(
+    prime: int, line: List[int]
+) -> List[List[List[int]]]:
+    translates = [[[0] for _ in range(prime)] for _ in range(prime)]
+    for y in range(prime):
+        for z in range(prime):
+            translates[z][y] = [
+                shift_point(point, y * prime + z * prime**2, prime)
+                for point in line
+            ]
+    return translates
