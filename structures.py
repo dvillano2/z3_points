@@ -2,7 +2,7 @@
 usage at non flat stage:
 line_list, translator = single_list_non_flat_lines(prime)
 non_indexed = all_non_flat_plane_groupings(5)
-indexed = all_non_flat_plane_groupings_index(non_indexed, translator)
+indexed = indexed_from_non_indexed(non_indexed, translator)
 
 line_list will be a list of all lines (list of lists)
 indexed will be a list of lists where each element represents a
@@ -13,6 +13,13 @@ so for the program, you can sum over everything in the line list
 of those via the plane groupings and demand they're under p + 1
 and the score bumps up if you get the same answer fo
 every chunk of the form [kp:(k+1)p]
+
+new usage, for everything:
+
+
+line_list, translator = full_line_list(prime)
+non_indexed = full_non_indexed_planes(prime)
+planes_with_line_indices = indexed_from_non_indexed(non_indexed, translator)
 """
 
 from typing import List
@@ -162,7 +169,7 @@ def single_list_non_flat_lines(
     return place_holder, translator
 
 
-def all_non_flat_plane_groupings_index(non_index_list, translator):
+def indexed_from_non_indexed(non_index_list, translator):
     return [
         [translator[tuple(line)] for line in grouping]
         for grouping in non_index_list
@@ -218,3 +225,30 @@ def final_line_translates(
                 for point in line
             ]
     return translates
+
+
+# All together
+def full_non_indexed_planes(prime: int):
+    non_index = all_non_flat_plane_groupings(prime)
+    return non_index.extend(
+        final_line_translates(prime, final_direction(prime))
+    )
+
+
+def full_line_list(prime: int):
+    line_list, translator = single_list_non_flat_lines(prime)
+    intermediate = all_intermediate_lines(prime)
+    for x, y, z in product(range(prime), repeat=3):
+        spot = prime**4 + prime**2 * x + prime * y + z
+        line = intermediate[x][y][z]
+        assert len(line_list) == spot
+        line_list.append(line)
+        translator[tuple(line)] = spot
+    final = final_line_translates(prime, final_direction(prime))
+    for x, y in product(range(prime), repeat=2):
+        spot = prime**4 + prime**3 + prime * x + y
+        line = final[x][y]
+        assert len(line_list) == spot
+        line_list.append(line)
+        translator[tuple(line)] = spot
+    return line_list, translator
