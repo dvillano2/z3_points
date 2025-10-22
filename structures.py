@@ -1,4 +1,5 @@
 from typing import List
+from typing import Dict
 from typing import Tuple
 from itertools import product
 
@@ -118,6 +119,21 @@ def all_non_flat_lines(prime: int) -> List[List[List[List[List[int]]]]]:
     for x, y in product(range(prime), repeat=2):
         full_list[y][x] = non_flat_line_translates(origin_lines[y][x], prime)
     return full_list
+
+
+def single_list_non_flat_lines(
+    prime: int,
+) -> Tuple[List[List[int]], Dict[List[int], int]]:
+    final_length: int = prime**4
+    place_holder: List[List[int]] = [[] for _ in range(final_length)]
+    translator: Dict[List[int], int] = {}
+    structured = all_non_flat_lines(prime)
+    for x, y, z, w in product(range(prime), repeat=4):
+        spot: int = prime**3 * x + prime**2 * y + prime * z + w
+        line: List[int] = structured[x][y][z][w]
+        place_holder[spot] = structured[x][y][z][w]
+        translator[line] = spot
+    return place_holder, translator
 
 
 # Intermediate lines
