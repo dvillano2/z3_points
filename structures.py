@@ -7,6 +7,7 @@ usage at non flat stage:
 line_list, translator = single_list_non_flat_lines(prime)
 non_indexed = all_plane_groupings(5)
 indexed = indexed_from_non_indexed(non_indexed, translator)
+n_indexed = all_plane_groupings(prime)
 
 line_list will be a list of all lines (list of lists)
 indexed will be a list of lists where each element represents a
@@ -22,7 +23,7 @@ new usage, for everything:
 
 
 line_list, translator = full_line_list(prime)
-non_indexed = full_non_indexed_planes(prime)
+non_indexed = all_plane_groupings(prime)
 planes_with_line_indices = indexed_from_non_indexed(non_indexed, translator)
 """
 
@@ -30,6 +31,15 @@ from typing import List
 from typing import Dict
 from typing import Tuple
 from itertools import product
+
+
+def build_geometery(prime):
+    line_list, translator = full_line_list(prime)
+    non_indexed = all_plane_groupings(prime)
+    planes_with_line_indices = indexed_from_non_indexed(
+        non_indexed, translator
+    )
+    return line_list, planes_with_line_indices
 
 
 def get_total_points(prime: int) -> int:
@@ -332,7 +342,7 @@ def all_intermediate_lines(prime: int) -> List[List[List[List[int]]]]:
 
 
 # Final direction
-def final_direction(prime: int) -> List[int]:
+def final_direction(prime: int) -> list[int]:
     return list(range(prime))
 
 
