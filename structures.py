@@ -1,7 +1,11 @@
 """
+SOMETHING WRONG... get plane count correct
+OVERCOUNTING ON PLANES... each plane is counted 5 times
+
+
 usage at non flat stage:
 line_list, translator = single_list_non_flat_lines(prime)
-non_indexed = all_non_flat_plane_groupings(5)
+non_indexed = all_plane_groupings(5)
 indexed = indexed_from_non_indexed(non_indexed, translator)
 
 line_list will be a list of all lines (list of lists)
@@ -104,8 +108,126 @@ def lines_for_plane_organization(prime: int) -> List[List[List[int]]]:
     return final_list
 
 
+def x_lines(prime):
+    x_function_lines = [
+        [
+            [[x, ((m * x) + b) % prime] for x in range(prime)]
+            for b in range(prime)
+        ]
+        for m in range(prime)
+    ]
+    final_list = [[] for _ in range(prime**2)]
+    for a in range(prime):
+        for b in range(prime):
+            final_list[a + prime * b] = x_function_lines[b][a]
+    return final_list
+
+
+def vertical_lines(prime):
+    return [[[y, b] for y in range(prime)] for b in range(prime)]
+
+
+def reused_directions(prime):
+    through_origin = non_flat_lines_through_origin(prime)
+    return [planes[0] for planes in through_origin]
+
+
+def special_directions(prime):
+    return non_flat_lines_through_origin(prime)[0]
+
+
+def non_vertial_planes(prime, non_flat_direction):
+    translates = non_flat_line_translates(non_flat_direction, prime)
+    in_place = x_lines(prime)
+    for a in range(prime**2):
+        for b in range(prime):
+            in_place[a][b] = translates[in_place[a][b][1]][in_place[a][b][0]]
+    return in_place
+
+
+def reused_plane_groupings(prime):
+    through_origin = reused_directions(prime)
+    place_holder = []
+    for direction in through_origin:
+        place_holder.extend(non_vertial_planes(prime, direction))
+    return place_holder
+
+
+def non_flat_plane_groupings(prime):
+    reused = reused_plane_groupings(prime)
+
+    through_origin = special_directions(prime)
+    for direction in through_origin:
+        translates = non_flat_line_translates(direction, prime)
+        in_place = vertical_lines(prime)
+        for a in range(prime):
+            for b in range(prime):
+                in_place[a][b] = translates[in_place[a][b][0]][
+                    in_place[a][b][1]
+                ]
+        reused.extend(in_place)
+    return reused
+
+
+def normal_directions(prime):
+    """
+    gives the normal diretions for the above p^2 + p planes
+    every p in the above list is a translation of someting
+    normal to the corresponding directions here
+    (work in chunks [kp:(k+1)p])
+    """
+    final_list = []
+    for z, x in product(range(prime), repeat=2):
+        final_list.append((x, -1, z))
+    for z in range(prime):
+        final_list.append((1, 0, -z))
+    return final_list
+
+
+def double_check(paired):
+    """
+    paired should be an expanded version of the
+    non_flat_plane_groupings function (apply expand index)
+    then repeat all the normal directions above p times
+    5 is hardcoded here, change if necessary
+    5 becomes prime, 125 becomes prime**2
+    """
+    count = 0
+    tracker = 0
+    for plane, normal in paired:
+        flattened_plane = [point for line in plane for point in line]
+        dot_product = [
+            (
+                normal[0] * point[0]
+                + normal[1] * point[1]
+                + normal[2] * point[2]
+            )
+            % 5
+            for point in flattened_plane
+        ]
+        print(dot_product)
+        assert len(set(dot_product)) == 1
+        assert len(dot_product) == 25
+        print("count:", count)
+        assert dot_product[0] == count
+        if tracker < 125:
+            count = (count - 1) % 5
+        else:
+            count = (count + 1) % 5
+        print(tracker)
+        tracker += 1
+
+
+def all_plane_groupings(prime):
+    non_flat = non_flat_plane_groupings(prime)
+    flat = final_line_translates(prime, final_direction(prime))
+    non_flat.extend(flat)
+    return non_flat
+
+
 def planes_from_line(non_flat_direction, prime):
     """
+    THIS OVERCOUNTS
     returns a list of lists such that each
     sub list is list of lines in the given
     direction that comprise a plane
@@ -230,9 +352,8 @@ def final_line_translates(
 # All together
 def full_non_indexed_planes(prime: int):
     non_index = all_non_flat_plane_groupings(prime)
-    return non_index.extend(
-        final_line_translates(prime, final_direction(prime))
-    )
+    non_index.extend(final_line_translates(prime, final_direction(prime)))
+    return non_index
 
 
 def full_line_list(prime: int):
