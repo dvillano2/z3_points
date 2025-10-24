@@ -36,10 +36,11 @@ from itertools import product
 def build_geometry(prime):
     line_list, translator = full_line_list(prime)
     non_indexed = all_plane_groupings(prime)
-    planes_with_line_indices = indexed_from_non_indexed(
-        non_indexed, translator
-    )
-    return line_list, planes_with_line_indices
+    # planes_with_line_indices = indexed_from_non_indexed(
+    #    non_indexed, translator
+    # )
+    flattened = flattened_non_indexed(non_indexed)
+    return line_list, flattened
 
 
 def get_total_points(prime: int) -> int:
@@ -305,6 +306,12 @@ def indexed_from_non_indexed(non_index_list, translator):
     return [
         [translator[tuple(line)] for line in grouping]
         for grouping in non_index_list
+    ]
+
+
+def flattened_non_indexed(non_index_list):
+    return [
+        [point for line in plane for point in line] for plane in non_index_list
     ]
 
 
