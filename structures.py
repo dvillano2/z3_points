@@ -18,13 +18,6 @@ so for the program, you can sum over everything in the line list
 of those via the plane groupings and demand they're under p + 1
 and the score bumps up if you get the same answer fo
 every chunk of the form [kp:(k+1)p]
-
-new usage, for everything:
-
-
-line_list, translator = full_line_list(prime)
-non_indexed = all_plane_groupings(prime)
-planes_with_line_indices = indexed_from_non_indexed(non_indexed, translator)
 """
 
 from typing import List
@@ -94,29 +87,6 @@ def non_flat_lines_through_origin(prime: int) -> List[List[List[int]]]:
                 for t in range(prime)
             ]
     return stereo_directions
-
-
-def lines_for_plane_organization(prime: int) -> List[List[List[int]]]:
-    """
-    Give a plane of points, give a list of all lines
-    in the plane ordered so that every [a*prime : (a+1)*prime}]
-    form a chunk of parallel lines. Useful for plane gorupings
-    """
-    x_function_lines = [
-        [
-            [[x, ((m * x) + b) % prime] for x in range(prime)]
-            for b in range(prime)
-        ]
-        for m in range(prime)
-    ]
-    vertical_lines = [[[b, y] for y in range(prime)] for b in range(prime)]
-    final_list = [[] for _ in range(prime**2 + prime)]
-    for a in range(prime):
-        for b in range(prime):
-            final_list[a + prime * b] = x_function_lines[b][a]
-    for a in range(prime):
-        final_list[prime**2 + a] = vertical_lines[a]
-    return final_list
 
 
 def x_lines(prime):
@@ -192,6 +162,7 @@ def normal_directions(prime):
         final_list.append((x, -1, z))
     for z in range(prime):
         final_list.append((1, 0, -z))
+    final_list.append((0, 0, 1))
     return final_list
 
 
@@ -234,47 +205,6 @@ def all_plane_groupings(prime):
     flat = final_line_translates(prime, final_direction(prime))
     non_flat.extend(flat)
     return non_flat
-
-
-def planes_from_line(non_flat_direction, prime):
-    """
-    THIS OVERCOUNTS
-    returns a list of lists such that each
-    sub list is list of lines in the given
-    direction that comprise a plane
-    moreover, each slice of the for [a*prime: (a+1)*prime]
-    comprise a plane
-    all such planes are given this way
-    """
-    translates = non_flat_line_translates(non_flat_direction, prime)
-    indices = lines_for_plane_organization(prime)
-    in_place = indices
-    for a, _ in enumerate(in_place):
-        for b, __ in enumerate(in_place[0]):
-            in_place[a][b] = translates[in_place[a][b][0]][in_place[a][b][1]]
-    return in_place
-
-
-def all_non_flat_plane_groupings(prime: int):
-    through_origin = non_flat_lines_through_origin(prime)
-    place_holder = []
-    for directions in through_origin:
-        for direction in directions:
-            place_holder.extend(planes_from_line(direction, prime))
-    return place_holder
-
-
-def planes_from_line_index_version(non_flat_direction, prime):
-    """
-    like before, but instead has the line intdices as
-    they will be if everything is flattened
-    """
-    indices = lines_for_plane_organization(prime)
-    in_place = indices
-    for a, _ in enumerate(in_place):
-        for b, __ in enumerate(in_place[0]):
-            in_place[a][b] = in_place[a][b][0] + in_place[a][b][1] * prime
-    return in_place
 
 
 def all_non_flat_lines(prime: int) -> List[List[List[List[List[int]]]]]:
@@ -367,10 +297,6 @@ def final_line_translates(
 
 
 # All together
-def full_non_indexed_planes(prime: int):
-    non_index = all_non_flat_plane_groupings(prime)
-    non_index.extend(final_line_translates(prime, final_direction(prime)))
-    return non_index
 
 
 def full_line_list(prime: int):
@@ -390,3 +316,57 @@ def full_line_list(prime: int):
         line_list.append(line)
         translator[tuple(line)] = spot
     return line_list, translator
+
+
+# tests
+
+
+def test_lines(line_list, prime):
+    total_lines = (prime**2 + prime + 1) * prime**2
+    line_set = {tuple(line) for line in line_list}
+    assert len(line_set) == total_lines
+
+    for line in line_list:
+        expanded = [expand_index(point, prime) for point in line]
+        assert len({tuple(expand) for expand in expanded}) == prime
+        diff = [(c0 - c1) % prime for c0, c1 in zip(expanded[0], expanded[1])]
+        assert any(d != 0 for d in diff)
+        scales = {
+            tuple((s * d) % prime for d in diff) for s in range(1, prime)
+        }
+        for point in expanded[2:]:
+            diff_vec = tuple(
+                (c0 - c1) % prime for c0, c1 in zip(expanded[0], point)
+            )
+            assert diff_vec in scales
+
+
+def test_planes(plane_list, normal_list, prime):
+    total_normals = prime**2 + prime + 1
+    total_planes = total_normals * prime
+    assert len(set(normal_list)) == total_normals
+    assert all(any(c % prime != 0 for c in normal) for normal in normal_list)
+    for i, normal_0 in enumerate(normal_list):
+        for normal_1 in normal_list[i + 1 :]:
+            for scale in range(1, prime):
+                assert any(
+                    (n0 - scale * n1) % prime != 0
+                    for n0, n1 in zip(normal_0, normal_1)
+                )
+
+    plane_set = {tuple(plane) for plane in plane_list}
+    assert len(plane_set) == total_planes
+
+    expanded_normals = [normal for normal in normal_list for _ in range(prime)]
+
+    intercepts = [0 for _ in range(prime)]
+    for plane, normal in zip(plane_list, expanded_normals):
+        expanded_plane = [expand_index(point, prime) for point in plane]
+        assert len({tuple(expand) for expand in expanded_plane}) == prime**2
+        dots = []
+        for point in expanded_plane:
+            dot = sum(cp * cn for cp, cn in zip(point, normal)) % prime
+            dots.append(dot)
+        assert len(set(dots)) == 1
+        intercepts[dot] += 1
+        assert max(intercepts) - min(intercepts) < 2
