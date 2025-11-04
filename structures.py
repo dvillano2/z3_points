@@ -370,3 +370,10 @@ def test_planes(plane_list, normal_list, prime):
         assert len(set(dots)) == 1
         intercepts[dot] += 1
         assert max(intercepts) - min(intercepts) < 2
+
+
+def test_special_points(prime):
+    assert expand_index(0, prime) == (0, 0, 0)
+    assert expand_index(1, prime) == (1, 0, 0)
+    assert expand_index(prime, prime) == (0, 1, 0)
+    assert expand_index(prime**2, prime) == (0, 0, 1)
