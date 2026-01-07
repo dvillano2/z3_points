@@ -1,2 +1,2 @@
 # z3_points
-![3D Point Animation](animation/animation.gif)
+<img src="animation/animation.gif" width="300">
