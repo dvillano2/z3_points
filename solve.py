@@ -24,9 +24,6 @@ TOTAL_LINES = TOTAL_DIRECTIONS * PRIME**2
 TOTAL_PLANES = TOTAL_DIRECTIONS * PRIME
 
 
-# =============================
-
-
 def make_points(prime):
     return [Bool(f"x_{i}") for i in range(prime**3)]
 
@@ -61,13 +58,6 @@ def add_plane_bounds(prime, planes, opt, points):
 
 
 def add_equidistribution(prime, points, planes, solver, threshold, m):
-    """
-    Flattened equidistribution check using integer sums.
-
-    - Each plane: sum of points
-    - Block counts as 1 if all planes in the block have exactly m points
-    - Single top-level PbGe for threshold
-    """
     total_planes = (prime**2 + prime + 1) * prime
     block_terms = []
 

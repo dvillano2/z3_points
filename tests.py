@@ -1,4 +1,4 @@
-from structures import expand_index
+from utils import expand_index
 
 def test_lines(line_list, prime):
     total_lines = (prime**2 + prime + 1) * prime**2

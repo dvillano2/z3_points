@@ -1,5 +1,6 @@
 from ortools.sat.python import cp_model
-from structures import build_geometry, normal_directions
+from structures import build_geometry
+from utils import normal_directions
 from tests import test_lines, test_planes, test_special_points
 
 
@@ -32,17 +33,9 @@ def milp_model(prime, m, threshold, seed=0):
 
     model.add(sum(x[i] for i in range(total_points)) == m * prime)
 
-    # ----------------------
-    # Line bounds
-    # ----------------------
-
     line_bound = min(m, prime - m)
     for line in lines:
         model.Add(sum(x[i] for i in line) <= line_bound)
-
-    # ----------------------
-    # Plane equality constraints (z_p = 1 iff sum == m)
-    # ----------------------
 
     for p, plane in enumerate(planes):
         s = sum(x[i] for i in plane)
@@ -52,9 +45,6 @@ def milp_model(prime, m, threshold, seed=0):
         model.Add(s - m <= prime * (1 - z_p[p]))
         model.Add(s - m >= -m * (1 - z_p[p]))
 
-    # ----------------------
-    # Block constraints: b_b = AND(z_p for planes in block)
-    # ----------------------
     for b in range(total_blocks):
         block_plane_indices = list(range(b * prime, (b + 1) * prime))
         # if any zp is zero, so is bb
@@ -69,9 +59,6 @@ def milp_model(prime, m, threshold, seed=0):
 
     model.add(sum(b_b) >= threshold)
 
-    # ----------------------
-    # Solve
-    # ----------------------
     solver = cp_model.CpSolver()
     solver.parameters.random_seed = seed
     solver.parameters.enumerate_all_solutions = False
