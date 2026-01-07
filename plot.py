@@ -38,5 +38,5 @@ def save_plot(prime, m, threshold, num, seed=0):
 
 
 if __name__ == "__main__":
-    for i in range(10):
+    for i in range(50):
         save_plot(5, 2, 10, i, i)
