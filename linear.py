@@ -42,7 +42,9 @@ def milp_model(prime, m, threshold, seed=0):
         model.Add(s <= prime)
 
         # this is like an asymmetric M-linearization
-        model.Add(s - m <= prime * (1 - z_p[p]))
+        # note not an if and only if! you're only asking
+        # if you can clear the threshold
+        model.Add(s - m <= (prime - m) * (1 - z_p[p]))
         model.Add(s - m >= -m * (1 - z_p[p]))
 
     for b in range(total_blocks):
