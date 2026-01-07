@@ -1,2 +1,4 @@
 # z3_points
-<img src="animation/animation.gif" width="300">
+<p align="center">
+  <img src="animation/animation.gif" width="500">
+</p>
