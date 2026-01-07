@@ -1,11 +1,6 @@
-rom ortools.sat.python import cp_model
-from structures import (
-    build_geometry,
-    normal_directions,
-    test_lines,
-    test_planes,
-    test_special_points,
-)
+from ortools.sat.python import cp_model
+from structures import build_geometry, normal_directions
+from tests import test_lines, test_planes, test_special_points
 
 
 def milp_model(prime, m, threshold, seed=0):
