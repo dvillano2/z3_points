@@ -17,10 +17,12 @@ Let $S$ be the subset and $p$ be the prime paramaterizing the space. To be a val
 3: For every plane $P$, $|S \cap P| \leq p$
 
 ## Instructions
-The model is found in the "linear.py" file. To run the milp_model function, you'll need to install OR-tools:
+The model is found in the "linear.py" file. To run the milp_model function, you'll need to install OR-tools. The easiest way is pip:
 ```bash
 pip install ortools
 ```
+but it doesn't seem to be compatilbe with python 3.14. I'm just running python 3.13.
+<br>
 The function takes four arguments:
 prime: the prime parameterizing the space
 m: the multiple of the prime that gives the size of the subset you're interested in. So if prime=5 and you're interested in subsets of size 15, m=3.
