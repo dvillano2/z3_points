@@ -22,7 +22,7 @@ The model is found in the "linear.py" file. To run the milp_model function, you'
 pip install ortools
 ```
 but it doesn't seem to be compatilbe with python 3.14. I'm just running python 3.13.
-<br>
+<br><br>
 The function takes four arguments:
 prime: the prime parameterizing the space
 m: the multiple of the prime that gives the size of the subset you're interested in. So if prime=5 and you're interested in subsets of size 15, m=3.
