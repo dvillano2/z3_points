@@ -10,11 +10,11 @@ The image above is a collection of optimally equidistrubted subsets of the three
 ## Geometric requirements
 Let $S$ be the subset and $p$ be the prime paramaterizing the space. To be a valid solution to the optimization, the following must be true:
 
-1: $|S| = mp$ where $2 \leq m \leq p - 1$
+1. $|S| = mp$ where $2 \leq m \leq p - 1$
 
-2: For every line $\ell$, $|S \cap \ell| \leq \min (m, p - m)$
+2. For every line $\ell$, $|S \cap \ell| \leq \min (m, p - m)$
 
-3: For every plane $P$, $|S \cap P| \leq p$
+3. For every plane $P$, $|S \cap P| \leq p$
 
 ## Instructions
 The model is found in the "linear.py" file. To run the milp_model function, you'll need to install OR-tools. The easiest way is pip:
@@ -24,15 +24,10 @@ pip install ortools
 but it doesn't seem to be compatilbe with python 3.14. I'm just running python 3.13.
 <br><br>
 The function takes four arguments:
-<br>
-**prime**: the prime parameterizing the space
-<br>
-**m**: the multiple of the prime that gives the size of the subset you're interested in. So if prime=5 and you're interested in subsets of size 15, m=3.
-<br>
-**threshold**: the number of parallel planes on which you require the plane to be equidistributed. So when threshold=6, the function will either return a set which is equidistrubted on at least 6 families of parallel planes, or None.
-<br>
-**seed**: the seed for the optimizer, optional, defaults to zero
-<br><br>
+-prime: the prime parameterizing the space
+-m: the multiple of the prime that gives the size of the subset you're interested in. So if prime=5 and you're interested in subsets of size 15, m=3.
+-threshold: the number of parallel planes on which you require the plane to be equidistributed. So when threshold=6, the function will either return a set which is equidistrubted on at least 6 families of parallel planes, or None.
+-seed: the seed for the optimizer, optional, defaults to zero
 Note that for most cases, the optimizer will not converge... the search space gets very big very fast.
 <br><br>
 Running the below will gives a proof that the animated examples above are optimal.
