@@ -25,7 +25,7 @@ The function takes four arguments:
 prime: the prime parametrizing the space
 m: the multiple of the prime that gives the size of the subset you're interested in. So if prime=5 and you're interested in subsets of size 15, m=3.
 threshold: the number of parallel planes on which you require the plane to be equidistributed. So when threshold=6, the function will either return a set which is equidistrubted on at least 6 families of parallel planes, or None.
-seed: the seed for the optimizer
+seed: the seed for the optimizer, optional, defaults to zero
 <br>
 Note that for most cases, the optimizer will not converge... the search space gets very big very fast.
 <br>
