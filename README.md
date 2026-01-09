@@ -9,8 +9,11 @@ The image above is a collection of optimally equidistrubted subsets of the three
 
 ## Geometric requirements
 Let $S$ be the subset and $p$ be the prime paramaterizing the space. To be a valid solution to the optimization, the following must be true:
+
 1: $|S| = mp$ where $2 \leq m \leq p - 1$
+
 2: For every line $\ell$, $|S \cap \ell| \leq \min (m, p - m)$
+
 3: For every plane $P$, $|S \cap P| \leq p$
 
 ## Instructions
