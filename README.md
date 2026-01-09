@@ -42,4 +42,4 @@ milp_model(5, 2, 11)
 milp_model(5, 3, 3)
 milp_model(5, 4, 1)
 ```
-Note that milp_model(5, 3, 3) will take a while to finish. On my laptop, it takes about ten minutes.
+milp_model(5, 3, 3) will take a while to finish. On my laptop, it takes about ten minutes.
