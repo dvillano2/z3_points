@@ -22,7 +22,7 @@ def milp_model(prime, m, threshold, seed=0):
     # x[i] = 1 if point is in subset
     x = [model.NewBoolVar(f"x_{i}") for i in range(total_points)]
 
-    # z_p[p] = 1 if plane p has exactly m points
+    # if z_p[p] = 1, plane p has exactly m points
     z_p = [model.NewBoolVar(f"plane_{p}_ok") for p in range(total_planes)]
 
     # b_b[block] = 1 if all planes in block are satisfied
